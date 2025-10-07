@@ -1,37 +1,34 @@
 <?php
-header('Content-Type: application/json');
 include 'connect.php';
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(array('success' => false, 'message' => 'Invalid request method'));
-    exit;
-}
-
-$username = isset($_POST['nameuser']) ? trim($_POST['nameuser']) : '';
+$username = isset($_POST['username']) ? trim($_POST['username']) : ''; // Lấy dữ liệu từ POST và loại bỏ khoảng trắng thừa , nếu không có thì gắn giá thị bằng rỗng
 $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
+
+
+// Kiểm tra nếu username hoặc password rỗng
 if (empty($username) || empty($password)) {
     echo json_encode(array('success' => false, 'message' => 'Vui lòng nhập đầy đủ thông tin'));
     exit;
 }
+$query = "SELECT username, password FROM taikhoan WHERE username = '$username'";
+$data = mysqli_query($conn, $query);
+$result = array();
+while ($row = mysqli_fetch_assoc($data)) {
+    $result[] = $row;
+}
 
-// Sử dụng Prepared Statement để tránh SQL Injection
-$stmt = $conn->prepare("SELECT id_user, nameuser, password FROM taikhoan WHERE nameuser = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    $user = $result->fetch_assoc();
+// nếu có 1 user thì kiểm tra mật khẩu , và lấy user đầu tiên
+if (count($result) > 0) {
+    $user = $result[0];
     
     // Kiểm tra mật khẩu (nếu dùng hash thì dùng password_verify)
     if ($user['password'] === $password) {  
         echo json_encode(array(
             'success' => true,
             'message' => 'Đăng nhập thành công',
-            'token' => $token,
             'userId' => $user['id_user'],
-            'username' => $user['nameuser']
+            'username' => $user['username']
         ));
     } else {
         echo json_encode(array('success' => false, 'message' => 'Sai tên đăng nhập hoặc mật khẩu'));
@@ -40,6 +37,5 @@ if ($result->num_rows > 0) {
     echo json_encode(array('success' => false, 'message' => 'Sai tên đăng nhập hoặc mật khẩu'));
 }
 
-$stmt->close();
 $conn->close();
 ?>
