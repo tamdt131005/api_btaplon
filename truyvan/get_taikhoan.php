@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
 include 'connect.php';
 
 $username = isset($_POST['username']) ? trim($_POST['username']) : ''; // Lấy dữ liệu từ POST và loại bỏ khoảng trắng thừa , nếu không có thì gắn giá thị bằng rỗng
@@ -14,7 +15,6 @@ $password = isset($_POST['matkhau']) ? trim($_POST['matkhau']) : '';
 $query = "SELECT username, matkhau FROM taikhoan WHERE username = '$username';";
 $data = mysqli_query($conn, $query);
 $result = array();
-print_r($query);
 while ($row = mysqli_fetch_assoc($data)) {
     $result[] = $row;
 }
