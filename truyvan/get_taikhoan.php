@@ -1,18 +1,20 @@
 <?php
 include 'connect.php';
+
 $username = isset($_POST['username']) ? trim($_POST['username']) : ''; // Lấy dữ liệu từ POST và loại bỏ khoảng trắng thừa , nếu không có thì gắn giá thị bằng rỗng
-$password = isset($_POST['password']) ? trim($_POST['password']) : '';
+$password = isset($_POST['matkhau']) ? trim($_POST['matkhau']) : '';
 
 
 
 // Kiểm tra nếu username hoặc password rỗng
-if (empty($username) || empty($password)) {
-    echo json_encode(array('success' => false, 'message' => 'Vui lòng nhập đầy đủ thông tin'));
-    exit;
-}
-$query = "SELECT username, password FROM taikhoan WHERE username = '$username'";
+// if (empty($username) || empty($password)) {
+//     echo json_encode(array('success' => false, 'message' => 'Vui lòng nhập đầy đủ thông tin'), JSON_UNESCAPED_UNICODE);
+//     exit;
+// }
+$query = "SELECT username, matkhau FROM taikhoan WHERE username = '$username';";
 $data = mysqli_query($conn, $query);
 $result = array();
+print_r($query);
 while ($row = mysqli_fetch_assoc($data)) {
     $result[] = $row;
 }
@@ -23,18 +25,17 @@ if (count($result) > 0) {
     $user = $result[0];
     
     // Kiểm tra mật khẩu (nếu dùng hash thì dùng password_verify)
-    if ($user['password'] === $password) {  
+    if ($user['matkhau'] === $password) {  
         echo json_encode(array(
             'success' => true,
             'message' => 'Đăng nhập thành công',
-            'userId' => $user['id_user'],
             'username' => $user['username']
-        ));
+        ), JSON_UNESCAPED_UNICODE);
     } else {
-        echo json_encode(array('success' => false, 'message' => 'Sai tên đăng nhập hoặc mật khẩu'));
+        echo json_encode(array('success' => false, 'message' => 'Sai tên đăng nhập hoặc mật khẩu'), JSON_UNESCAPED_UNICODE);
     }
 } else {
-    echo json_encode(array('success' => false, 'message' => 'Sai tên đăng nhập hoặc mật khẩu'));
+    echo json_encode(array('success' => false, 'message' => 'Sai tên đăng nhập hoặc mật khẩu'), JSON_UNESCAPED_UNICODE);
 }
 
 $conn->close();
