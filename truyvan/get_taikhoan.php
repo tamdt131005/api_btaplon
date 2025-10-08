@@ -11,25 +11,30 @@ if (empty($login_input) || empty($password)) {
     exit;
 }
 
-// Cho phép đăng nhập bằng username, email hoặc mobile
-$query = "SELECT username,email, matkhau FROM taikhoan WHERE username = '$login_input' OR email = '$login_input' OR mobile = '$login_input';";
-$data = mysqli_query($conn, $query);
-$result = array();
-while ($row = mysqli_fetch_assoc($data)) {
-    $result[] = $row;
-}
+// Escape input để tránh injection
+$li = mysqli_real_escape_string($conn, $login_input);
 
-// Nếu có 1 user thì kiểm tra mật khẩu, và lấy user đầu tiên
-if (count($result) > 0) {
-    $user = $result[0];
-    
-    // Kiểm tra mật khẩu
-    if ($user['matkhau'] === $password) {  
+// Cho phép đăng nhập bằng username, email hoặc mobile
+$query = "SELECT tk.username, tk.email, tk.matkhau, nd.hinhanhnguoidung FROM taikhoan tk LEFT JOIN nguoidung nd ON tk.username = nd.username WHERE tk.username = '$li' OR tk.email = '$li' OR tk.mobile = '$li' LIMIT 1";
+$data = mysqli_query($conn, $query);
+
+if ($data && mysqli_num_rows($data) > 0) {
+    $user = mysqli_fetch_assoc($data);
+
+    // Kiểm tra mật khẩu (hiện đang so sánh plain text như cũ)
+    if ($user['matkhau'] === $password) {
+        // Nếu hinhanhnguoidung NULL thì trả về chuỗi rỗng
+        $avatar = '';
+        if (isset($user['hinhanhnguoidung']) && $user['hinhanhnguoidung'] !== null) {
+            $avatar = $user['hinhanhnguoidung'];
+        }
+
         echo json_encode(array(
             'success' => true,
             'message' => 'Đăng nhập thành công',
             'username' => $user['username'],
-            'email' => $user['email']
+            'email' => $user['email'],
+            'avatar' => $avatar
         ), JSON_UNESCAPED_UNICODE);
     } else {
         echo json_encode(array('success' => false, 'message' => 'Sai tên đăng nhập hoặc mật khẩu'), JSON_UNESCAPED_UNICODE);
