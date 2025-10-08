@@ -12,7 +12,7 @@ if (empty($login_input) || empty($password)) {
 }
 
 // Cho phép đăng nhập bằng username, email hoặc mobile
-$query = "SELECT username, matkhau FROM taikhoan WHERE username = '$login_input' OR email = '$login_input' OR mobile = '$login_input';";
+$query = "SELECT username,email, matkhau FROM taikhoan WHERE username = '$login_input' OR email = '$login_input' OR mobile = '$login_input';";
 $data = mysqli_query($conn, $query);
 $result = array();
 while ($row = mysqli_fetch_assoc($data)) {
@@ -28,7 +28,8 @@ if (count($result) > 0) {
         echo json_encode(array(
             'success' => true,
             'message' => 'Đăng nhập thành công',
-            'username' => $user['username']
+            'username' => $user['username'],
+            'email' => $user['email']
         ), JSON_UNESCAPED_UNICODE);
     } else {
         echo json_encode(array('success' => false, 'message' => 'Sai tên đăng nhập hoặc mật khẩu'), JSON_UNESCAPED_UNICODE);
