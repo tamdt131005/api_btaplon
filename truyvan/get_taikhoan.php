@@ -2,29 +2,28 @@
 header('Content-Type: application/json; charset=utf-8');
 include 'connect.php';
 
-$username = isset($_POST['username']) ? trim($_POST['username']) : ''; // Lấy dữ liệu từ POST và loại bỏ khoảng trắng thừa , nếu không có thì gắn giá thị bằng rỗng
+$login_input = isset($_POST['username']) ? trim($_POST['username']) : ''; // Có thể là username, email hoặc mobile
 $password = isset($_POST['matkhau']) ? trim($_POST['matkhau']) : '';
 
-
-
-//Kiểm tra nếu username hoặc password rỗng
-if (empty($username) || empty($password)) {
+// Kiểm tra nếu login_input hoặc password rỗng
+if (empty($login_input) || empty($password)) {
     echo json_encode(array('success' => false, 'message' => 'Vui lòng nhập đầy đủ thông tin'), JSON_UNESCAPED_UNICODE);
     exit;
 }
-$query = "SELECT username, matkhau FROM taikhoan WHERE username = '$username';";
+
+// Cho phép đăng nhập bằng username, email hoặc mobile
+$query = "SELECT username, matkhau FROM taikhoan WHERE username = '$login_input' OR email = '$login_input' OR mobile = '$login_input';";
 $data = mysqli_query($conn, $query);
 $result = array();
 while ($row = mysqli_fetch_assoc($data)) {
     $result[] = $row;
 }
 
-
-// nếu có 1 user thì kiểm tra mật khẩu , và lấy user đầu tiên
+// Nếu có 1 user thì kiểm tra mật khẩu, và lấy user đầu tiên
 if (count($result) > 0) {
     $user = $result[0];
     
-    // Kiểm tra mật khẩu (nếu dùng hash thì dùng password_verify)
+    // Kiểm tra mật khẩu
     if ($user['matkhau'] === $password) {  
         echo json_encode(array(
             'success' => true,
