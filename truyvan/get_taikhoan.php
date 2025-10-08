@@ -7,11 +7,11 @@ $password = isset($_POST['matkhau']) ? trim($_POST['matkhau']) : '';
 
 
 
-// Kiểm tra nếu username hoặc password rỗng
-// if (empty($username) || empty($password)) {
-//     echo json_encode(array('success' => false, 'message' => 'Vui lòng nhập đầy đủ thông tin'), JSON_UNESCAPED_UNICODE);
-//     exit;
-// }
+//Kiểm tra nếu username hoặc password rỗng
+if (empty($username) || empty($password)) {
+    echo json_encode(array('success' => false, 'message' => 'Vui lòng nhập đầy đủ thông tin'), JSON_UNESCAPED_UNICODE);
+    exit;
+}
 $query = "SELECT username, matkhau FROM taikhoan WHERE username = '$username';";
 $data = mysqli_query($conn, $query);
 $result = array();
