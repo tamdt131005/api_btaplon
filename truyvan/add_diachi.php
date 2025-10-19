@@ -32,8 +32,7 @@ $query = "INSERT INTO diachigiao (madiachi, username, tennguoinhan, sdtnhan, tin
 if (mysqli_query($conn, $query)) {
     echo json_encode(array(
         'success' => true,
-        'message' => 'Thêm địa chỉ thành công',
-        'madiachi' => $madiachi
+        'message' => 'Thêm địa chỉ thành công'
     ), JSON_UNESCAPED_UNICODE);
 } else {
     echo json_encode(array('success' => false, 'message' => 'Thêm địa chỉ thất bại: ' . mysqli_error($conn)), JSON_UNESCAPED_UNICODE);
