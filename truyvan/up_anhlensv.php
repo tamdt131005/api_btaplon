@@ -103,9 +103,6 @@ if (mysqli_query($conn, $sqlUpdate)) {
 	$conn->close();
 	exit;
 }
-
-// Nếu tới đây: UPDATE không ảnh hưởng hàng nào -> thường là không tìm thấy username trong bảng `nguoidung`
-// Xóa file mới và trả về lỗi
 if (file_exists($destination)) {@unlink($destination);} 
 echo json_encode(array('success' => false, 'message' => 'Không tìm thấy username trong bảng nguoidung'), JSON_UNESCAPED_UNICODE);
 $conn->close();
