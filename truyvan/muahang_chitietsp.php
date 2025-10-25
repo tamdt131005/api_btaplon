@@ -12,6 +12,7 @@ $masp_array = isset($_POST['masp']) ? $_POST['masp'] : [];
 $dongia_array = isset($_POST['dongia']) ? $_POST['dongia'] : [];
 $soluong_array = isset($_POST['soluong']) ? $_POST['soluong'] : [];
 $ghichu_array = isset($_POST['ghichu']) ? $_POST['ghichu'] : [];
+$mode = isset($_POST['mode']) ? trim($_POST['mode']) : 0;
 // Kiểm tra thông tin bắt buộc
 if (empty($username) || empty($madiachi) || empty($phuongthucthanhtoan) || empty($tongtien)) {
     echo json_encode(array('success' => false, 'message' => 'Thiếu thông tin bắt buộc'), JSON_UNESCAPED_UNICODE);
@@ -54,6 +55,11 @@ try {
         $query_trangthaidh = "INSERT INTO trangthaidonhang (matt, mactdh, ngaycapnhat, trangthai, ghichu) 
                             VALUES ('$matt', '$mactdh', current_timestamp(), 'Chờ xác nhận', '$ghichu')";
         mysqli_query($conn, $query_trangthaidh);
+        if($mode == 1){
+        // Xoá giỏ hàng sau khi đặt hàng thành công
+        $query_delete_giohang = "DELETE FROM giohang WHERE masp = '$masp'";
+        mysqli_query($conn, $query_delete_giohang);
+    }
     }
     mysqli_commit($conn);
     echo json_encode(array('success' => true, 'message' => 'Thêm đơn hàng thành công'), JSON_UNESCAPED_UNICODE);
