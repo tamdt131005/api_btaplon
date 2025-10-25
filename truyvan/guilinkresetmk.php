@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => false, 'message' => 'Email không tồn tại trong hệ thống!']);
         exit;
     }
-    $resetToken =rand(10000000, 99999999); // Tạo token ngẫu nhiên
+    $resetToken =rand(100000, 999999); // Tạo token ngẫu nhiên
     if (saveResetToken($email, $resetToken)) {
         $result = sendPasswordResetEmail($email, $resetToken);
         echo json_encode($result);

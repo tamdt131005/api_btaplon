@@ -9,7 +9,7 @@ if (empty($username) || empty($password)) {
     echo json_encode(array('success' => false, 'message' => 'Vui lòng nhập đầy đủ thông tin'), JSON_UNESCAPED_UNICODE);
     exit;
 }
-$query = "SELECT username, matkhau FROM taikhoan WHERE username = '$username';";
+$query = "SELECT username, matkhau FROM taikhoan WHERE username = '$username' or email='$username' ;";
 $data = mysqli_query($conn, $query);
 $result = array();
 while ($row = mysqli_fetch_assoc($data)) {
