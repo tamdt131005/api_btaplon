@@ -20,6 +20,5 @@ if (mysqli_query($conn, $query)) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Lỗi khi cập nhật sản phẩm']);
 }
-
 $conn->close();
 ?>

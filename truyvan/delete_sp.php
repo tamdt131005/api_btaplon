@@ -9,6 +9,8 @@ if (empty($masp)) {
 }
 $query = "DELETE FROM sanpham WHERE masp='$masp'";
 if (mysqli_query($conn, $query)) {
+    $qr= "DELETE FROM spban WHERE masp='$masp'";
+    mysqli_query($conn, $qr);
     echo json_encode(['success' => true, 'message' => 'Xóa sản phẩm thành công']);
 } else {
     echo json_encode(['success' => false, 'message' => 'Lỗi khi xóa sản phẩm']);
