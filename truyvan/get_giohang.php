@@ -29,8 +29,13 @@ if (!empty($result)) {
         'result' => $result
    ]  ;
         
-} else {
-    echo json_encode(array('success' => false, 'message' => 'Không tìm thấy sản phẩm trong giỏ hàng'), JSON_UNESCAPED_UNICODE);
+} 
+    else {
+    $arr = array(
+        'success' => true,
+        'message' => 'Giỏ hàng trống',
+        'item' => array() 
+    );
 }
 print_r(json_encode($arr, JSON_UNESCAPED_UNICODE)); 
 $conn->close();

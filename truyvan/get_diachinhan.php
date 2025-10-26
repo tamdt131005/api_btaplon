@@ -19,7 +19,7 @@ if (mysqli_num_rows($result_username) === 0) {
 }
 
 // Lấy danh sách địa chỉ
-$query = "SELECT madiachi, tennguoinhan, sdtnhan, tinhthanhpho, tennhasonha,macdinh FROM diachigiao WHERE username = '$username' order by macdinh desc;";
+$query = "SELECT madiachi, tennguoinhan, sdtnhan, tinhthanhpho, tennhasonha, macdinh FROM diachigiao WHERE username = '$username' ORDER BY macdinh DESC;";
 $data = mysqli_query($conn, $query);
 $result = array();
 
@@ -27,18 +27,22 @@ while ($row = mysqli_fetch_assoc($data)) {
     $result[] = $row;
 }
 
+// Luôn trả về cấu trúc JSON đồng nhất
 if (!empty($result)) {
-    $arr = [
+    $arr = array(
         'success' => true,
         'message' => 'Lấy thông tin địa chỉ thành công',
-        'result' => $result
-
-   ]  ;
-        
+        'result' => $result  // Đổi từ 'result' thành 'item'
+    );
 } else {
-    echo json_encode(array('success' => false, 'message' => 'Không tìm thấy sản phẩm'), JSON_UNESCAPED_UNICODE);
+    $arr = array(
+        'success' => true,  // Đổi thành true
+        'message' => 'Chưa có địa chỉ nào',
+        'result' => array()  
+    );
 }
-print_r(json_encode($arr, JSON_UNESCAPED_UNICODE));
+
+echo json_encode($arr, JSON_UNESCAPED_UNICODE);
 
 $conn->close();
 ?>
